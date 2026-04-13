@@ -24,31 +24,29 @@
       box-shadow: 0 8px 30px rgba(0,0,0,0.12);
       display: flex;
       flex-direction: column;
-      height: 90vh;
+      height: 100vh;
       overflow: hidden;
     }
 
     .chat-header {
       background: linear-gradient(135deg, #1a73e8, #0d47a1);
       color: white;
-      padding: 18px 20px;
+      padding: 16px 20px;
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-shrink: 0;
     }
 
     .bot-avatar {
-      width: 42px;
-      height: 42px;
-      background: rgba(255,255,255,0.25);
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.2);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
     }
 
-    .chat-header h2 { font-size: 17px; font-weight: 600; }
+    .chat-header h2 { font-size: 16px; font-weight: 700; }
     .chat-header p  { font-size: 12px; opacity: 0.85; margin-top: 2px; }
 
     .status-dot {
@@ -59,26 +57,22 @@
       margin-right: 5px;
       animation: pulse 1.5s infinite;
     }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50%       { opacity: 0.4; }
-    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
 
     .chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 20px 15px;
+      padding: 16px 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .message { display: flex; align-items: flex-end; gap: 8px; }
     .message.user { flex-direction: row-reverse; }
 
     .bubble {
-      max-width: 75%;
+      max-width: 78%;
       padding: 10px 14px;
       border-radius: 18px;
       font-size: 14px;
@@ -100,10 +94,8 @@
     .avatar {
       width: 30px; height: 30px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px;
       flex-shrink: 0;
     }
 
@@ -116,42 +108,51 @@
       color: #1a73e8;
       border-radius: 12px;
       padding: 2px 8px;
-      margin-top: 5px;
+      margin-top: 4px;
       display: inline-block;
     }
 
     .typing {
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      display: flex; align-items: center; gap: 5px;
       padding: 10px 14px;
       background: #f1f3f4;
       border-radius: 18px;
       border-bottom-left-radius: 4px;
       width: fit-content;
     }
-
     .typing span {
       width: 7px; height: 7px;
-      background: #888;
-      border-radius: 50%;
+      background: #888; border-radius: 50%;
       animation: bounce 1.2s infinite;
     }
+    .typing span:nth-child(2) { animation-delay:.2s }
+    .typing span:nth-child(3) { animation-delay:.4s }
+    @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
 
-    .typing span:nth-child(2) { animation-delay: 0.2s; }
-    .typing span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); }
-      30%           { transform: translateY(-6px); }
+    .quick-replies {
+      display: flex; flex-wrap: wrap; gap: 7px;
+      padding: 8px 12px;
+      flex-shrink: 0;
     }
 
+    .quick-btn {
+      background: #f0f4ff;
+      border: 1.5px solid #c5d4ff;
+      color: #1a73e8;
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all .15s;
+    }
+    .quick-btn:hover { background:#1a73e8; color:white; border-color:#1a73e8; }
+
     .chat-input {
-      padding: 14px 15px;
+      padding: 10px 12px;
       border-top: 1px solid #e0e0e0;
-      display: flex;
-      gap: 10px;
+      display: flex; gap: 8px;
       background: white;
+      flex-shrink: 0;
     }
 
     .chat-input input {
@@ -161,58 +162,27 @@
       padding: 10px 16px;
       font-size: 14px;
       outline: none;
-      transition: border 0.2s;
+      transition: border .2s;
     }
-
     .chat-input input:focus { border-color: #1a73e8; }
 
     .chat-input button {
       background: linear-gradient(135deg, #1a73e8, #0d47a1);
-      color: white;
-      border: none;
+      color: white; border: none;
       border-radius: 50%;
-      width: 42px;
-      height: 42px;
-      cursor: pointer;
-      font-size: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s;
+      width: 42px; height: 42px;
+      cursor: pointer; font-size: 18px;
+      display: flex; align-items: center; justify-content: center;
+      transition: transform .1s;
     }
-
-    .chat-input button:hover   { transform: scale(1.08); }
-    .chat-input button:active  { transform: scale(0.95); }
-
-    .quick-replies {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      padding: 0 15px 12px;
-    }
-
-    .quick-btn {
-      background: #f0f4ff;
-      border: 1.5px solid #c5d4ff;
-      color: #1a73e8;
-      border-radius: 20px;
-      padding: 6px 13px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .quick-btn:hover {
-      background: #1a73e8;
-      color: white;
-      border-color: #1a73e8;
-    }
+    .chat-input button:hover  { transform: scale(1.08); }
+    .chat-input button:active { transform: scale(0.95); }
   </style>
 </head>
 <body>
 
 <div class="chat-container">
-  <!-- Header -->
+
   <div class="chat-header">
     <div class="bot-avatar">🤖</div>
     <div>
@@ -221,13 +191,12 @@
     </div>
   </div>
 
-  <!-- Messages -->
   <div class="chat-messages" id="chatMessages">
     <div class="message bot">
       <div class="avatar">🤖</div>
       <div>
         <div class="bubble">
-          👋 Hello! I'm your AI Support Assistant. I can help you with:<br><br>
+          👋 Hello! I'm your AI Support Assistant.<br>I can help you with:<br><br>
           🛒 Order Status &nbsp;|&nbsp; 💰 Billing &nbsp;|&nbsp; 🔄 Refunds<br>
           🔧 Technical Issues &nbsp;|&nbsp; 📦 Shipping
         </div>
@@ -235,7 +204,6 @@
     </div>
   </div>
 
-  <!-- Quick Replies -->
   <div class="quick-replies">
     <button class="quick-btn" onclick="sendQuick('Where is my order?')">📦 Order Status</button>
     <button class="quick-btn" onclick="sendQuick('I want a refund')">🔄 Refund</button>
@@ -244,99 +212,250 @@
     <button class="quick-btn" onclick="sendQuick('Shipping information')">🚚 Shipping</button>
   </div>
 
-  <!-- Input -->
   <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Type your message..." 
-           onkeypress="handleKey(event)" autocomplete="off"/>
+    <input type="text" id="userInput" placeholder="Type your message..."
+           onkeypress="if(event.key==='Enter') sendMessage()" autocomplete="off"/>
     <button onclick="sendMessage()">➤</button>
   </div>
+
 </div>
 
 <script>
-  const messagesDiv = document.getElementById("chatMessages");
-  const inputField  = document.getElementById("userInput");
+// ═══════════════════════════════════════════════════════════
+//  FULL NLP CHATBOT — Runs 100% in browser, no backend needed
+// ═══════════════════════════════════════════════════════════
 
-  function scrollToBottom() {
-    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+const INTENTS = [
+  {
+    tag: "greeting",
+    patterns: ["hi","hello","hey","good morning","good afternoon","howdy","whats up","greetings","is anyone there","good evening"],
+    responses: [
+      "Hello! Welcome to Customer Support. How can I help you today? 😊",
+      "Hi there! How can I assist you?",
+      "Hey! What can I do for you today?"
+    ]
+  },
+  {
+    tag: "goodbye",
+    patterns: ["bye","see you later","goodbye","i am leaving","have a good day","thanks bye","talk later","exit","quit","see you","take care"],
+    responses: [
+      "Goodbye! Have a great day! 👋",
+      "See you later! Feel free to come back anytime.",
+      "Bye! Take care! 😊"
+    ]
+  },
+  {
+    tag: "thanks",
+    patterns: ["thanks","thank you","thats helpful","awesome thanks","thanks for helping","thank you so much","much appreciated","ty","great thanks"],
+    responses: [
+      "Happy to help! Is there anything else I can assist you with? 😊",
+      "You're welcome! Let me know if you need anything else.",
+      "Glad I could help! 👍"
+    ]
+  },
+  {
+    tag: "order_status",
+    patterns: ["where is my order","track my order","order status","when will my order arrive","my order is late","track my package","status of my order","has my order been shipped","order tracking","check my order","my order hasnt arrived","when will i get my package","i want to track","order not delivered","where is my package","delivery status"],
+    responses: [
+      "📦 To track your order, please provide your Order ID and I'll look it up for you.",
+      "You can track your order using the tracking link sent to your email. Can you share your Order ID?",
+      "I can help check your order status! Please provide your Order ID or registered email."
+    ]
+  },
+  {
+    tag: "refund",
+    patterns: ["i want a refund","how do i get a refund","refund my money","cancel and refund","refund policy","return my product","i need to return an item","how long does refund take","my refund is pending","where is my refund","refund not received","i want to return my order","give me my money back","request a refund","process refund","money back","return item","return order"],
+    responses: [
+      "🔄 Refunds are processed within 5–7 business days. To initiate a refund, please provide your Order ID.",
+      "I can help with a refund! Our policy allows returns within 30 days of purchase. Please share your Order ID.",
+      "To process your refund, I'll need your Order ID and reason for return. Could you provide that?"
+    ]
+  },
+  {
+    tag: "billing",
+    patterns: ["billing issue","wrong charge","i was overcharged","billing problem","payment issue","my payment failed","charge dispute","update billing","change payment method","invoice not received","i need my invoice","billing inquiry","payment not processed","double charged","unexpected charge","payment error","incorrect charge","billing question","payment problem","overcharged","charged twice"],
+    responses: [
+      "💳 I'm sorry about the billing issue. Please share your account email and I'll investigate the charge.",
+      "For billing disputes, please provide your account details and transaction date so I can assist.",
+      "I can help resolve billing issues. Could you share your Order ID and describe the issue?"
+    ]
+  },
+  {
+    tag: "technical_support",
+    patterns: ["technical issue","app not working","website is down","cant login","error message","bug in the app","page not loading","technical problem","software issue","app keeps crashing","my account is locked","password reset","forgot my password","cant access my account","login error","i cant sign in","account not working","not loading","site down","app crash","reset password","cant open","not responding","broken","doesnt work"],
+    responses: [
+      "🔧 I'm sorry you're experiencing technical issues. Can you describe the error message or problem?",
+      "Let's troubleshoot! What device and browser are you using? What exactly is happening?",
+      "For technical support, please describe the issue step by step so I can assist you better."
+    ]
+  },
+  {
+    tag: "product_info",
+    patterns: ["tell me about your products","what do you sell","product information","do you have this product","is this item in stock","product details","features of the product","product specifications","what are your products","show me your catalog","product availability","do you have","in stock","available","catalog","what products"],
+    responses: [
+      "🛍️ We offer a wide range of products! Could you specify which product you're interested in?",
+      "I'd be happy to provide product information. Which product are you asking about?",
+      "For detailed product info, please tell me the specific product you need."
+    ]
+  },
+  {
+    tag: "shipping",
+    patterns: ["shipping options","how long does delivery take","shipping cost","free shipping","express delivery","international shipping","same day delivery","delivery charges","when will it be delivered","shipping policy","delivery time","do you ship worldwide","shipping fees","how fast","delivery","how long shipping","shipping time","fast delivery","overnight shipping"],
+    responses: [
+      "🚚 We offer Standard (5–7 days), Express (2–3 days), and Same Day delivery. Free shipping on orders above $50!",
+      "Delivery times: Standard shipping = 5–7 business days, Express = 2–3 days, Same Day available in select areas.",
+      "We ship worldwide! 🌍 International orders take 10–15 business days. Any specific shipping question?"
+    ]
+  },
+  {
+    tag: "cancel_order",
+    patterns: ["cancel my order","i want to cancel","stop my order","how to cancel order","cancel subscription","i dont want my order","please cancel my purchase","order cancellation","cancel purchase","undo my order","cancel it","want to cancel"],
+    responses: [
+      "❌ I can help cancel your order. Orders can be cancelled within 24 hours of placement. Please share your Order ID.",
+      "To cancel your order, please provide your Order ID and I'll process the cancellation immediately.",
+      "Cancellations are possible before the order is shipped. Please share your Order ID to proceed."
+    ]
+  },
+  {
+    tag: "complaint",
+    patterns: ["i want to make a complaint","i am not happy","this is unacceptable","terrible service","bad experience","i am disappointed","very unhappy","your service is bad","i want to speak to a manager","this is ridiculous","i am frustrated","worst service","not satisfied","unhappy","poor service","bad support","awful","horrible"],
+    responses: [
+      "😔 I sincerely apologize for your experience. Your feedback matters. Could you describe the issue so we can resolve it?",
+      "I'm very sorry to hear that. Let me escalate this to our team right away. Please share the details.",
+      "I understand your frustration and I'm sorry. I'll do everything I can to make this right. 🙏"
+    ]
   }
+];
 
-  function addMessage(text, sender, intent = null, confidence = null) {
-    const div = document.createElement("div");
-    div.className = `message ${sender}`;
+// ── Simple TF-IDF–style scoring in JS ──────────────────────────────────────
 
-    const avatar = sender === "bot" ? "🤖" : "👤";
+function tokenize(text) {
+  return text.toLowerCase()
+    .replace(/[^a-z0-9\s]/g, "")
+    .split(/\s+/)
+    .filter(Boolean);
+}
 
-    let extra = "";
-    if (sender === "bot" && intent && intent !== "unknown") {
-      extra = `<div class="intent-tag">🏷️ ${intent} (${(confidence * 100).toFixed(0)}%)</div>`;
+function getBigrams(tokens) {
+  const bg = [];
+  for (let i = 0; i < tokens.length - 1; i++)
+    bg.push(tokens[i] + "_" + tokens[i+1]);
+  return bg;
+}
+
+function getFeatures(text) {
+  const tokens = tokenize(text);
+  return [...tokens, ...getBigrams(tokens)];
+}
+
+function cosineSimilarity(setA, setB) {
+  let matches = 0;
+  for (const t of setA) if (setB.has(t)) matches++;
+  return matches / (Math.sqrt(setA.size) * Math.sqrt(setB.size) + 1e-9);
+}
+
+function classifyIntent(userText) {
+  const userFeatures = new Set(getFeatures(userText));
+  let bestTag = "unknown", bestScore = 0;
+
+  for (const intent of INTENTS) {
+    // Pool all patterns together for scoring
+    const allPatternFeatures = new Set();
+    for (const p of intent.patterns)
+      for (const f of getFeatures(p)) allPatternFeatures.add(f);
+
+    const score = cosineSimilarity(userFeatures, allPatternFeatures);
+
+    // Bonus: exact keyword match
+    let bonus = 0;
+    for (const p of intent.patterns) {
+      const clean = p.toLowerCase().replace(/[^a-z0-9\s]/g,"");
+      if (userText.toLowerCase().includes(clean)) bonus += 0.3;
     }
 
-    div.innerHTML = `
-      <div class="avatar">${avatar}</div>
-      <div>
-        <div class="bubble">${text}</div>
-        ${extra}
-      </div>`;
-
-    messagesDiv.appendChild(div);
-    scrollToBottom();
-  }
-
-  function showTyping() {
-    const div = document.createElement("div");
-    div.className = "message bot";
-    div.id = "typingIndicator";
-    div.innerHTML = `
-      <div class="avatar">🤖</div>
-      <div class="typing">
-        <span></span><span></span><span></span>
-      </div>`;
-    messagesDiv.appendChild(div);
-    scrollToBottom();
-  }
-
-  function removeTyping() {
-    const t = document.getElementById("typingIndicator");
-    if (t) t.remove();
-  }
-
-  async function sendMessage() {
-    const msg = inputField.value.trim();
-    if (!msg) return;
-
-    inputField.value = "";
-    addMessage(msg, "user");
-    showTyping();
-
-    try {
-      const res = await fetch("/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: msg })
-      });
-
-      const data = await res.json();
-      removeTyping();
-
-      if (data.error) {
-        addMessage("⚠️ " + data.error, "bot");
-      } else {
-        addMessage(data.response, "bot", data.intent, data.confidence);
-      }
-    } catch (err) {
-      removeTyping();
-      addMessage("⚠️ Connection error. Please try again.", "bot");
+    const totalScore = score + bonus;
+    if (totalScore > bestScore) {
+      bestScore = totalScore;
+      bestTag = intent.tag;
     }
   }
 
-  function sendQuick(text) {
-    inputField.value = text;
-    sendMessage();
+  const confidence = Math.min(bestScore * 1.5, 1);
+  if (confidence < 0.05) bestTag = "unknown";
+
+  return { tag: bestTag, confidence };
+}
+
+function getResponse(tag) {
+  const intent = INTENTS.find(i => i.tag === tag);
+  if (intent) return intent.responses[Math.floor(Math.random() * intent.responses.length)];
+  return "I'm sorry, I didn't understand that. Could you rephrase? Or contact support@company.com for help.";
+}
+
+// ── UI Functions ────────────────────────────────────────────────────────────
+
+const messagesDiv = document.getElementById("chatMessages");
+const inputField  = document.getElementById("userInput");
+
+function scrollToBottom() {
+  messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function addMessage(text, sender, intent, confidence) {
+  const div = document.createElement("div");
+  div.className = `message ${sender}`;
+  const avatar = sender === "bot" ? "🤖" : "👤";
+
+  let extra = "";
+  if (sender === "bot" && intent && intent !== "unknown") {
+    extra = `<div class="intent-tag">🏷️ ${intent} · ${(confidence * 100).toFixed(0)}%</div>`;
   }
 
-  function handleKey(e) {
-    if (e.key === "Enter") sendMessage();
-  }
+  div.innerHTML = `
+    <div class="avatar">${avatar}</div>
+    <div>
+      <div class="bubble">${text}</div>
+      ${extra}
+    </div>`;
+  messagesDiv.appendChild(div);
+  scrollToBottom();
+}
+
+function showTyping() {
+  const div = document.createElement("div");
+  div.className = "message bot"; div.id = "typingDot";
+  div.innerHTML = `<div class="avatar">🤖</div>
+    <div class="typing"><span></span><span></span><span></span></div>`;
+  messagesDiv.appendChild(div); scrollToBottom();
+}
+
+function removeTyping() {
+  const t = document.getElementById("typingDot");
+  if (t) t.remove();
+}
+
+function sendMessage() {
+  const msg = inputField.value.trim();
+  if (!msg) return;
+  inputField.value = "";
+
+  addMessage(msg, "user");
+  showTyping();
+
+  // Simulate NLP processing delay (300–700ms)
+  const delay = 300 + Math.random() * 400;
+  setTimeout(() => {
+    removeTyping();
+    const { tag, confidence } = classifyIntent(msg);
+    const response = getResponse(tag);
+    addMessage(response, "bot", tag, confidence);
+  }, delay);
+}
+
+function sendQuick(text) {
+  inputField.value = text;
+  sendMessage();
+}
 </script>
 </body>
 </html>
