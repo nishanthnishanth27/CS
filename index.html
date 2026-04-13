@@ -6,477 +6,337 @@
   <title>Customer Support Chatbot</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       background: #f0f2f5;
-      display: flex; justify-content: center; min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
+
     .chat-container {
-      width: 100%; max-width: 480px; background: white;
-      display: flex; flex-direction: column; height: 100vh; overflow: hidden;
+      width: 100%;
+      max-width: 480px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      height: 90vh;
+      overflow: hidden;
     }
+
     .chat-header {
-      background: linear-gradient(135deg, #1565c0, #0d47a1);
-      color: white; padding: 14px 16px;
-      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
+
     .bot-avatar {
-      width: 44px; height: 44px; background: rgba(255,255,255,0.2);
-      border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; font-size: 22px;
+      width: 42px;
+      height: 42px;
+      background: rgba(255,255,255,0.25);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
     }
-    .chat-header h2 { font-size: 16px; font-weight: 700; }
+
+    .chat-header h2 { font-size: 17px; font-weight: 600; }
     .chat-header p  { font-size: 12px; opacity: 0.85; margin-top: 2px; }
+
     .status-dot {
-      width: 8px; height: 8px; background: #4cff72; border-radius: 50%;
-      display: inline-block; margin-right: 5px; animation: pulse 1.5s infinite;
+      width: 8px; height: 8px;
+      background: #4cff72;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      animation: pulse 1.5s infinite;
     }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-    .tab-bar { display: flex; border-bottom: 2px solid #e0e0e0; flex-shrink: 0; }
-    .tab-btn {
-      flex: 1; padding: 10px; background: none; border: none;
-      font-size: 13px; font-weight: 600; color: #888; cursor: pointer;
-      border-bottom: 3px solid transparent; transition: all .2s;
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.4; }
     }
-    .tab-btn.active { color: #1565c0; border-bottom-color: #1565c0; }
-
-    .view { display: none; flex: 1; flex-direction: column; overflow: hidden; }
-    .view.active { display: flex; }
 
     .chat-messages {
-      flex: 1; overflow-y: auto; padding: 14px 12px;
-      display: flex; flex-direction: column; gap: 10px;
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 15px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
+
     .message { display: flex; align-items: flex-end; gap: 8px; }
     .message.user { flex-direction: row-reverse; }
+
     .bubble {
-      max-width: 78%; padding: 10px 14px; border-radius: 18px;
-      font-size: 14px; line-height: 1.5;
+      max-width: 75%;
+      padding: 10px 14px;
+      border-radius: 18px;
+      font-size: 14px;
+      line-height: 1.5;
     }
-    .bot .bubble  { background: #f1f3f4; color: #1a1a1a; border-bottom-left-radius: 4px; }
-    .user .bubble { background: linear-gradient(135deg,#1565c0,#0d47a1); color:white; border-bottom-right-radius:4px; }
+
+    .bot .bubble {
+      background: #f1f3f4;
+      color: #1a1a1a;
+      border-bottom-left-radius: 4px;
+    }
+
+    .user .bubble {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
     .avatar {
-      width: 30px; height: 30px; border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px; flex-shrink: 0;
+      width: 30px; height: 30px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      flex-shrink: 0;
     }
+
     .bot .avatar  { background: #e8f0fe; }
-    .user .avatar { background: #1565c0; color: white; }
+    .user .avatar { background: #1a73e8; color: white; }
+
     .intent-tag {
-      font-size: 11px; background: #e8f0fe; color: #1565c0;
-      border-radius: 12px; padding: 2px 8px; margin-top: 4px; display: inline-block;
+      font-size: 11px;
+      background: #e8f0fe;
+      color: #1a73e8;
+      border-radius: 12px;
+      padding: 2px 8px;
+      margin-top: 5px;
+      display: inline-block;
     }
+
     .typing {
-      display: flex; align-items: center; gap: 5px; padding: 10px 14px;
-      background: #f1f3f4; border-radius: 18px; border-bottom-left-radius: 4px; width: fit-content;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 14px;
+      background: #f1f3f4;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      width: fit-content;
     }
+
     .typing span {
-      width: 7px; height: 7px; background: #888;
-      border-radius: 50%; animation: bounce 1.2s infinite;
+      width: 7px; height: 7px;
+      background: #888;
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
     }
-    .typing span:nth-child(2){animation-delay:.2s}
-    .typing span:nth-child(3){animation-delay:.4s}
-    @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30%           { transform: translateY(-6px); }
+    }
+
+    .chat-input {
+      padding: 14px 15px;
+      border-top: 1px solid #e0e0e0;
+      display: flex;
+      gap: 10px;
+      background: white;
+    }
+
+    .chat-input input {
+      flex: 1;
+      border: 1.5px solid #ddd;
+      border-radius: 24px;
+      padding: 10px 16px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+
+    .chat-input input:focus { border-color: #1a73e8; }
+
+    .chat-input button {
+      background: linear-gradient(135deg, #1a73e8, #0d47a1);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s;
+    }
+
+    .chat-input button:hover   { transform: scale(1.08); }
+    .chat-input button:active  { transform: scale(0.95); }
 
     .quick-replies {
-      display: flex; flex-wrap: wrap; gap: 6px;
-      padding: 8px 12px; flex-shrink: 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 0 15px 12px;
     }
-    .quick-btn {
-      background: #f0f4ff; border: 1.5px solid #c5d4ff; color: #1565c0;
-      border-radius: 20px; padding: 6px 11px; font-size: 12px;
-      cursor: pointer; transition: all .15s;
-    }
-    .quick-btn:hover { background: #1565c0; color: white; border-color: #1565c0; }
-    .chat-input {
-      padding: 10px 12px; border-top: 1px solid #e0e0e0;
-      display: flex; gap: 8px; background: white; flex-shrink: 0;
-    }
-    .chat-input input {
-      flex: 1; border: 1.5px solid #ddd; border-radius: 24px;
-      padding: 10px 16px; font-size: 14px; outline: none; transition: border .2s;
-    }
-    .chat-input input:focus { border-color: #1565c0; }
-    .chat-input button {
-      background: linear-gradient(135deg,#1565c0,#0d47a1); color: white;
-      border: none; border-radius: 50%; width: 42px; height: 42px;
-      cursor: pointer; font-size: 18px; display: flex; align-items: center;
-      justify-content: center; transition: transform .1s;
-    }
-    .chat-input button:hover  { transform: scale(1.08); }
-    .chat-input button:active { transform: scale(.95); }
 
-    /* Bill Scanner */
-    .scanner-view {
-      flex: 1; overflow-y: auto; padding: 16px;
-      display: flex; flex-direction: column; gap: 14px;
+    .quick-btn {
+      background: #f0f4ff;
+      border: 1.5px solid #c5d4ff;
+      color: #1a73e8;
+      border-radius: 20px;
+      padding: 6px 13px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s;
     }
-    .scanner-card {
-      background: #f8f9ff; border: 2px dashed #c5d4ff;
-      border-radius: 14px; padding: 28px 16px;
-      text-align: center; cursor: pointer; transition: all .2s;
-    }
-    .scanner-card:hover { border-color: #1565c0; background: #f0f4ff; }
-    .scanner-card .icon { font-size: 44px; margin-bottom: 10px; }
-    .scanner-card h3 { font-size: 15px; color: #1565c0; margin-bottom: 6px; }
-    .scanner-card p  { font-size: 12px; color: #888; }
-    #billFileInput { display: none; }
-    .bill-preview {
-      border-radius: 12px; overflow: hidden;
-      border: 1px solid #e0e0e0; display: none;
-    }
-    .bill-preview img { width: 100%; display: block; }
-    .analyze-btn {
-      background: linear-gradient(135deg,#1565c0,#0d47a1);
-      color: white; border: none; border-radius: 12px;
-      padding: 14px; font-size: 15px; font-weight: 700;
-      cursor: pointer; display: none; transition: opacity .2s;
-    }
-    .analyze-btn:hover { opacity: .9; }
-    .loading-bar {
-      height: 5px; background: #e0e0e0; border-radius: 4px;
-      overflow: hidden; display: none;
-    }
-    .loading-bar-inner {
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg,#1565c0,#42a5f5);
-      border-radius: 4px; animation: load 2.2s ease forwards;
-    }
-    @keyframes load { to { width: 100%; } }
-    .bill-result {
-      background: #f8f9ff; border-radius: 14px;
-      border: 1px solid #e0e0e0; padding: 16px; display: none;
-    }
-    .bill-result h3 { color: #1565c0; font-size: 15px; margin-bottom: 12px; }
-    .bill-row {
-      display: flex; justify-content: space-between;
-      padding: 8px 0; border-bottom: 1px solid #eee; font-size: 14px;
-    }
-    .bill-row:last-child { border-bottom: none; }
-    .bill-row .label { color: #555; }
-    .bill-row .value { font-weight: 700; color: #1a1a1a; }
-    .bill-row.total .value { color: #1565c0; font-size: 16px; }
-    .ok-msg {
-      background: #e8f5e9; border-left: 3px solid #2e7d32;
-      border-radius: 0 8px 8px 0; padding: 8px 12px;
-      font-size: 13px; color: #2e7d32; margin-top: 10px;
-    }
-    .issue-item {
-      background: #fff3e0; border-left: 3px solid #ff8f00;
-      border-radius: 0 8px 8px 0; padding: 8px 12px;
-      margin-bottom: 6px; font-size: 13px; color: #e65100; margin-top: 10px;
-    }
-    .action-row { display: flex; gap: 8px; margin-top: 12px; }
-    .action-btn {
-      flex: 1; padding: 10px; border-radius: 10px;
-      font-size: 13px; font-weight: 600; cursor: pointer;
-    }
-    .action-btn.warn {
-      background: #fff3e0; border: 1.5px solid #ff8f00; color: #e65100;
-    }
-    .action-btn.primary {
-      background: linear-gradient(135deg,#1565c0,#0d47a1);
-      color: white; border: none;
+
+    .quick-btn:hover {
+      background: #1a73e8;
+      color: white;
+      border-color: #1a73e8;
     }
   </style>
 </head>
 <body>
-<div class="chat-container">
 
+<div class="chat-container">
+  <!-- Header -->
   <div class="chat-header">
     <div class="bot-avatar">🤖</div>
-    <div style="flex:1">
+    <div>
       <h2>Support Assistant</h2>
       <p><span class="status-dot"></span>Online — NLP Powered</p>
     </div>
   </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('chat',this)">💬 Chat Support</button>
-    <button class="tab-btn"        onclick="switchTab('scanner',this)">🧾 Bill Scanner</button>
-  </div>
-
-  <!-- CHAT VIEW -->
-  <div class="view active" id="chatView">
-    <div class="chat-messages" id="chatMessages">
-      <div class="message bot">
-        <div class="avatar">🤖</div>
-        <div>
-          <div class="bubble">
-            👋 Hello! I'm your AI Support Assistant.<br>I can help you with:<br><br>
-            🛒 Order Status &nbsp;|&nbsp; 💰 Billing &nbsp;|&nbsp; 🔄 Refunds<br>
-            🔧 Technical Issues &nbsp;|&nbsp; 📦 Shipping &nbsp;|&nbsp; 🧾 Bill Scanner
-          </div>
+  <!-- Messages -->
+  <div class="chat-messages" id="chatMessages">
+    <div class="message bot">
+      <div class="avatar">🤖</div>
+      <div>
+        <div class="bubble">
+          👋 Hello! I'm your AI Support Assistant. I can help you with:<br><br>
+          🛒 Order Status &nbsp;|&nbsp; 💰 Billing &nbsp;|&nbsp; 🔄 Refunds<br>
+          🔧 Technical Issues &nbsp;|&nbsp; 📦 Shipping
         </div>
       </div>
     </div>
-    <div class="quick-replies">
-      <button class="quick-btn" onclick="sendQuick('Where is my order?')">📦 Order Status</button>
-      <button class="quick-btn" onclick="sendQuick('I want a refund')">🔄 Refund</button>
-      <button class="quick-btn" onclick="sendQuick('I have a billing issue')">💳 Billing</button>
-      <button class="quick-btn" onclick="sendQuick('App not working')">🔧 Tech Support</button>
-      <button class="quick-btn" onclick="sendQuick('How long does shipping take?')">🚚 Shipping</button>
-      <button class="quick-btn" onclick="sendQuick('Cancel my order')">❌ Cancel Order</button>
-    </div>
-    <div class="chat-input">
-      <input type="text" id="userInput" placeholder="Type your message…"
-             onkeypress="if(event.key==='Enter')sendMessage()" autocomplete="off"/>
-      <button onclick="sendMessage()">➤</button>
-    </div>
   </div>
 
-  <!-- BILL SCANNER VIEW -->
-  <div class="view" id="scannerView">
-    <div class="scanner-view">
-      <div class="scanner-card" onclick="document.getElementById('billFileInput').click()">
-        <div class="icon">🧾</div>
-        <h3>Upload Bill / Invoice</h3>
-        <p>Tap to upload a photo of your bill.<br>Supports JPG, PNG formats.</p>
-      </div>
-      <input type="file" id="billFileInput" accept="image/*" onchange="previewBill(event)"/>
-      <div class="bill-preview" id="billPreview">
-        <img id="billImage" src="" alt="Bill Preview"/>
-      </div>
-      <div class="loading-bar" id="loadingBar"><div class="loading-bar-inner"></div></div>
-      <button class="analyze-btn" id="analyzeBtn" onclick="analyzeBill()">🔍 Analyze Bill</button>
-      <div class="bill-result" id="billResult"></div>
-    </div>
+  <!-- Quick Replies -->
+  <div class="quick-replies">
+    <button class="quick-btn" onclick="sendQuick('Where is my order?')">📦 Order Status</button>
+    <button class="quick-btn" onclick="sendQuick('I want a refund')">🔄 Refund</button>
+    <button class="quick-btn" onclick="sendQuick('I have a billing issue')">💳 Billing</button>
+    <button class="quick-btn" onclick="sendQuick('App not working')">🔧 Tech Support</button>
+    <button class="quick-btn" onclick="sendQuick('Shipping information')">🚚 Shipping</button>
   </div>
 
+  <!-- Input -->
+  <div class="chat-input">
+    <input type="text" id="userInput" placeholder="Type your message..." 
+           onkeypress="handleKey(event)" autocomplete="off"/>
+    <button onclick="sendMessage()">➤</button>
+  </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════════════════════════════
-//  ACCURATE NLP — Keyword Priority Matching (No more wrong answers!)
-// ═══════════════════════════════════════════════════════════════════
+  const messagesDiv = document.getElementById("chatMessages");
+  const inputField  = document.getElementById("userInput");
 
-const INTENTS = [
-  {
-    tag: "greeting",
-    keywords: ["hi","hello","hey","good morning","good afternoon","good evening","howdy","greetings"],
-    responses: [
-      "Hello! Welcome to Customer Support. How can I help you today? 😊",
-      "Hi there! How can I assist you?",
-      "Hey! What can I do for you today?"
-    ]
-  },
-  {
-    tag: "goodbye",
-    keywords: ["bye","goodbye","see you","see you later","leaving","have a good day","take care","later"],
-    responses: [
-      "Goodbye! Have a great day! 👋",
-      "See you later! Come back anytime.",
-      "Bye! Take care! 😊"
-    ]
-  },
-  {
-    tag: "thanks",
-    keywords: ["thanks","thank you","thank u","ty","appreciated","that was helpful","great help","you helped"],
-    responses: [
-      "Happy to help! Is there anything else I can assist you with? 😊",
-      "You're welcome! Let me know if you need anything else.",
-      "Glad I could help! 👍"
-    ]
-  },
-  {
-    tag: "order_status",
-    keywords: [
-      "where is my order","track my order","order status","order tracking",
-      "when will my order arrive","my order is late","track my package",
-      "check my order","order not delivered","where is my package",
-      "delivery status","order information","order info","order update",
-      "when will i receive my order","package status","shipment status",
-      "my order hasn't arrived","when is my order coming","order number"
-    ],
-    responses: [
-      "📦 To track your order, please provide your Order ID and I'll look it up.",
-      "You can track your order via the link in your email. Can you share your Order ID?",
-      "I can help check your order status! Please provide your Order ID or registered email."
-    ]
-  },
-  {
-    tag: "refund",
-    keywords: [
-      "refund","i want a refund","get a refund","refund my money",
-      "return my product","return my order","return item","money back",
-      "give me my money back","refund policy","refund not received",
-      "refund pending","process refund","request refund","how do i return"
-    ],
-    responses: [
-      "🔄 Refunds are processed within 5–7 business days. Please provide your Order ID to initiate.",
-      "I can help with a refund! Our policy allows returns within 30 days. Share your Order ID.",
-      "To process your refund, I'll need your Order ID and reason for return."
-    ]
-  },
-  {
-    tag: "billing",
-    keywords: [
-      "billing issue","billing problem","billing question","billing inquiry",
-      "wrong charge","overcharged","i was overcharged","unexpected charge",
-      "incorrect charge","payment issue","payment failed","payment not processed",
-      "payment error","double charged","charged twice","invoice","billing"
-    ],
-    responses: [
-      "💳 I'm sorry about the billing issue. Share your account email and I'll investigate.",
-      "For billing disputes, provide your account details and transaction date.",
-      "I can resolve billing issues. Share your Order ID and describe the problem."
-    ]
-  },
-  {
-    tag: "technical_support",
-    keywords: [
-      "app not working","technical issue","technical problem","website is down",
-      "cant login","cannot login","login error","cant sign in","error message",
-      "bug","page not loading","app crash","app crashing","account locked",
-      "password reset","forgot password","cant access","not loading","site down",
-      "not responding","broken","doesnt work","not working","login problem",
-      "account problem","website problem"
-    ],
-    responses: [
-      "🔧 I'm sorry you're experiencing technical issues. Can you describe the error?",
-      "Let's troubleshoot! What device and browser are you using? What exactly is happening?",
-      "Please describe the technical issue step by step so I can assist you better."
-    ]
-  },
-  {
-    tag: "shipping",
-    keywords: [
-      "shipping information","shipping info","shipping options","shipping cost",
-      "shipping fee","shipping policy","shipping time","shipping speed","shipping",
-      "how long does delivery take","delivery time","delivery charges",
-      "free shipping","express delivery","same day delivery","fast delivery",
-      "international shipping","when will it be delivered","delivery options",
-      "how long does shipping take","estimated delivery","delivery estimate"
-    ],
-    responses: [
-      "🚚 We offer Standard (5–7 days), Express (2–3 days), and Same Day delivery. Free shipping on orders above $50!",
-      "Delivery times: Standard = 5–7 business days, Express = 2–3 days.",
-      "We ship worldwide! 🌍 International orders take 10–15 business days."
-    ]
-  },
-  {
-    tag: "cancel_order",
-    keywords: [
-      "cancel my order","cancel order","i want to cancel","cancel purchase",
-      "stop my order","order cancellation","how to cancel","please cancel",
-      "cancel it","dont want my order","undo my order"
-    ],
-    responses: [
-      "❌ Orders can be cancelled within 24 hours. Please share your Order ID.",
-      "To cancel your order, provide your Order ID and I'll process it immediately.",
-      "Cancellations are possible before shipping. Share your Order ID to proceed."
-    ]
-  },
-  {
-    tag: "account_info",
-    keywords: [
-      "account information","account info","account details","my account",
-      "account settings","update account","change account","account help",
-      "manage account","profile","my profile","account number","account name"
-    ],
-    responses: [
-      "👤 For account help, please go to Account Settings or share your registered email.",
-      "I can help with your account! Please provide your registered email address.",
-      "You can view and update your account details in the Account Settings section."
-    ]
-  },
-  {
-    tag: "product_info",
-    keywords: [
-      "product information","product info","product details","product specs",
-      "tell me about your products","what do you sell","what products do you have",
-      "in stock","is this available","product availability","catalog","features"
-    ],
-    responses: [
-      "🛍️ We offer a wide range of products! Which product are you interested in?",
-      "I'd be happy to provide product information. Which product are you asking about?",
-      "Please mention the specific product name you need info about."
-    ]
-  },
-  {
-    tag: "complaint",
-    keywords: [
-      "complaint","make a complaint","not happy","unacceptable","terrible service",
-      "bad experience","disappointed","very unhappy","your service is bad",
-      "speak to a manager","frustrated","worst service","not satisfied",
-      "poor service","bad support","awful","horrible"
-    ],
-    responses: [
-      "😔 I sincerely apologize for your experience. Could you describe the issue?",
-      "I'm very sorry. Let me escalate this to our team right away. Please share details.",
-      "I understand your frustration and I'm sorry. I'll do everything to make this right. 🙏"
-    ]
+  function scrollToBottom() {
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
   }
-];
 
-// ── Accurate classifier: phrase match first, then word match ────────────────
-function normalize(text) {
-  return text.toLowerCase().replace(/[^a-z0-9\s]/g,"").replace(/\s+/g," ").trim();
-}
+  function addMessage(text, sender, intent = null, confidence = null) {
+    const div = document.createElement("div");
+    div.className = `message ${sender}`;
 
-function classifyIntent(userText) {
-  const norm = normalize(userText);
-  let bestTag = "unknown", bestScore = 0;
+    const avatar = sender === "bot" ? "🤖" : "👤";
 
-  for (const intent of INTENTS) {
-    let score = 0;
-    for (const kw of intent.keywords) {
-      const kwNorm = normalize(kw);
-      if (norm === kwNorm) { score += 200; break; }         // exact match
-      if (norm.includes(kwNorm)) {
-        score += 50 + kwNorm.split(" ").length * 10;         // phrase found
-      } else {
-        // partial word overlap
-        const kwWords = kwNorm.split(" ");
-        const uWords  = new Set(norm.split(" "));
-        const hits = kwWords.filter(w => w.length > 2 && uWords.has(w)).length;
-        score += hits * 3;
-      }
+    let extra = "";
+    if (sender === "bot" && intent && intent !== "unknown") {
+      extra = `<div class="intent-tag">🏷️ ${intent} (${(confidence * 100).toFixed(0)}%)</div>`;
     }
-    if (score > bestScore) { bestScore = score; bestTag = intent.tag; }
+
+    div.innerHTML = `
+      <div class="avatar">${avatar}</div>
+      <div>
+        <div class="bubble">${text}</div>
+        ${extra}
+      </div>`;
+
+    messagesDiv.appendChild(div);
+    scrollToBottom();
   }
 
-  const confidence = bestScore === 0 ? 0 : Math.min(bestScore / 80, 1);
-  if (confidence < 0.05) bestTag = "unknown";
-  return { tag: bestTag, confidence };
-}
-
-function getResponse(tag) {
-  const intent = INTENTS.find(i => i.tag === tag);
-  if (intent) return intent.responses[Math.floor(Math.random() * intent.responses.length)];
-  return "I'm sorry, I didn't understand that. Could you rephrase? Or email support@company.com";
-}
-
-// ── Chat UI ─────────────────────────────────────────────────────────────────
-const messagesDiv = document.getElementById("chatMessages");
-const inputField  = document.getElementById("userInput");
-
-function scrollToBottom() { messagesDiv.scrollTop = messagesDiv.scrollHeight; }
-
-function addMessage(text, sender, intent, confidence) {
-  const div = document.createElement("div");
-  div.className = `message ${sender}`;
-  const avatar = sender === "bot" ? "🤖" : "👤";
-  let extra = "";
-  if (sender === "bot" && intent && intent !== "unknown") {
-    extra = `<div class="intent-tag">🏷️ ${intent} · ${Math.round(confidence*100)}%</div>`;
+  function showTyping() {
+    const div = document.createElement("div");
+    div.className = "message bot";
+    div.id = "typingIndicator";
+    div.innerHTML = `
+      <div class="avatar">🤖</div>
+      <div class="typing">
+        <span></span><span></span><span></span>
+      </div>`;
+    messagesDiv.appendChild(div);
+    scrollToBottom();
   }
-  div.innerHTML = `<div class="avatar">${avatar}</div>
-    <div><div class="bubble">${text}</div>${extra}</div>`;
-  messagesDiv.appendChild(div);
-  scrollToBottom();
-}
 
-function showTyping() {
-  const div = document.createElement("div");
-  div.className = "message bot"; div.id = "typingDot";
-  div.innerHTML = `<div class="avatar">🤖</div>
-    <div class="typing"><span></span><span></span><span></span></div>`;
-  messagesDiv.appendChild(div); scrollToBottom();
-}
-function removeTyping() { const t=document.getElementById("typingDot"); if(t) t.remove(); }
+  function removeTyping() {
+    const t = document.getElementById("typingIndicator");
+    if (t) t.remove();
+  }
 
-function sendMessage() {
-  const msg = inputField.value.trim();
-  
+  async function sendMessage() {
+    const msg = inputField.value.trim();
+    if (!msg) return;
+
+    inputField.value = "";
+    addMessage(msg, "user");
+    showTyping();
+
+    try {
+      const res = await fetch("/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: msg })
+      });
+
+      const data = await res.json();
+      removeTyping();
+
+      if (data.error) {
+        addMessage("⚠️ " + data.error, "bot");
+      } else {
+        addMessage(data.response, "bot", data.intent, data.confidence);
+      }
+    } catch (err) {
+      removeTyping();
+      addMessage("⚠️ Connection error. Please try again.", "bot");
+    }
+  }
+
+  function sendQuick(text) {
+    inputField.value = text;
+    sendMessage();
+  }
+
+  function handleKey(e) {
+    if (e.key === "Enter") sendMessage();
+  }
+</script>
+</body>
+</html>
