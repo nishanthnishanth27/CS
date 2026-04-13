@@ -1,0 +1,169 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "Hi", "Hello", "Hey", "Good morning", "Good afternoon",
+        "Is anyone there?", "Howdy", "What's up", "Greetings"
+      ],
+      "responses": [
+        "Hello! Welcome to Customer Support. How can I help you today?",
+        "Hi there! How can I assist you?",
+        "Hey! What can I do for you today?"
+      ]
+    },
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "Bye", "See you later", "Goodbye", "I am leaving", "Have a good day",
+        "Thanks bye", "Talk later", "Exit", "Quit"
+      ],
+      "responses": [
+        "Goodbye! Have a great day!",
+        "See you later! Feel free to come back anytime.",
+        "Bye! Take care!"
+      ]
+    },
+    {
+      "tag": "thanks",
+      "patterns": [
+        "Thanks", "Thank you", "That's helpful", "Awesome thanks",
+        "Thanks for helping me", "Thank you so much", "Much appreciated"
+      ],
+      "responses": [
+        "Happy to help! Is there anything else I can assist you with?",
+        "You're welcome! Let me know if you need anything else.",
+        "Glad I could help!"
+      ]
+    },
+    {
+      "tag": "order_status",
+      "patterns": [
+        "Where is my order?", "Track my order", "Order status",
+        "When will my order arrive?", "My order is late",
+        "I want to track my package", "What is the status of my order?",
+        "Has my order been shipped?", "Order tracking", "Check my order",
+        "My order hasn't arrived", "When will I get my package?"
+      ],
+      "responses": [
+        "To track your order, please provide your Order ID and I'll look it up for you.",
+        "You can track your order using the tracking link sent to your email. Can you share your Order ID?",
+        "I can help you check your order status! Please provide your Order ID or registered email."
+      ]
+    },
+    {
+      "tag": "refund",
+      "patterns": [
+        "I want a refund", "How do I get a refund?", "Refund my money",
+        "Cancel and refund", "Refund policy", "Return my product",
+        "I need to return an item", "How long does refund take?",
+        "My refund is pending", "Where is my refund?", "Refund not received",
+        "I want to return my order", "Give me my money back"
+      ],
+      "responses": [
+        "Refunds are processed within 5-7 business days. To initiate a refund, please provide your Order ID.",
+        "I can help you with a refund! Our policy allows returns within 30 days of purchase. Please share your Order ID.",
+        "To process your refund, I'll need your Order ID and reason for return. Could you provide that?"
+      ]
+    },
+    {
+      "tag": "billing",
+      "patterns": [
+        "I have a billing issue", "Wrong charge on my account",
+        "I was overcharged", "Billing problem", "Payment issue",
+        "My payment failed", "Charge dispute", "Update billing info",
+        "Change my payment method", "Invoice not received",
+        "I need my invoice", "Billing inquiry", "Payment not processed",
+        "Double charged", "Unexpected charge"
+      ],
+      "responses": [
+        "I'm sorry to hear about the billing issue. Please share your account email and I'll investigate the charge.",
+        "For billing disputes, please provide your account details and the transaction date so I can assist you.",
+        "I can help resolve billing issues. Could you provide your Order ID and describe the issue?"
+      ]
+    },
+    {
+      "tag": "technical_support",
+      "patterns": [
+        "I have a technical issue", "App not working", "Website is down",
+        "Can't login to my account", "Error message", "Bug in the app",
+        "Page not loading", "Technical problem", "Software issue",
+        "App keeps crashing", "My account is locked", "Password reset",
+        "Forgot my password", "Can't access my account", "Login error",
+        "I can't sign in", "Account not working"
+      ],
+      "responses": [
+        "I'm sorry you're experiencing technical issues. Can you describe the error message or problem in detail?",
+        "Let's troubleshoot this! What device and browser are you using? And what exactly is happening?",
+        "For technical support, please describe the issue step by step so I can assist you better."
+      ]
+    },
+    {
+      "tag": "product_info",
+      "patterns": [
+        "Tell me about your products", "What do you sell?",
+        "Product information", "Do you have this product?",
+        "Is this item in stock?", "Product details", "Features of the product",
+        "Product specifications", "What are your products?",
+        "Show me your catalog", "Product availability"
+      ],
+      "responses": [
+        "We offer a wide range of products! Could you specify which product you're interested in?",
+        "I'd be happy to provide product information. Which product are you asking about?",
+        "For detailed product info, please visit our catalog page or tell me the specific product you need."
+      ]
+    },
+    {
+      "tag": "shipping",
+      "patterns": [
+        "What are shipping options?", "How long does delivery take?",
+        "Shipping cost", "Free shipping", "Express delivery",
+        "International shipping", "Same day delivery", "Delivery charges",
+        "When will it be delivered?", "Shipping policy", "Delivery time",
+        "Do you ship worldwide?", "Shipping fees"
+      ],
+      "responses": [
+        "We offer Standard (5-7 days), Express (2-3 days), and Same Day delivery options. Shipping is free on orders above $50!",
+        "Delivery times vary: Standard shipping takes 5-7 business days, Express takes 2-3 days.",
+        "We ship worldwide! International orders typically take 10-15 business days. Would you like more details?"
+      ]
+    },
+    {
+      "tag": "cancel_order",
+      "patterns": [
+        "Cancel my order", "I want to cancel", "Stop my order",
+        "How to cancel order", "Cancel subscription", "I don't want my order",
+        "Please cancel my purchase", "Order cancellation"
+      ],
+      "responses": [
+        "I can help you cancel your order. Orders can be cancelled within 24 hours of placement. Please share your Order ID.",
+        "To cancel your order, please provide your Order ID and I'll process the cancellation immediately.",
+        "Cancellations are possible before the order is shipped. Please share your Order ID to proceed."
+      ]
+    },
+    {
+      "tag": "complaint",
+      "patterns": [
+        "I want to make a complaint", "I am not happy",
+        "This is unacceptable", "Terrible service", "Bad experience",
+        "I am disappointed", "Very unhappy with service",
+        "Your service is bad", "I want to speak to a manager",
+        "This is ridiculous", "I am frustrated"
+      ],
+      "responses": [
+        "I sincerely apologize for your experience. Your feedback is important to us. Could you describe the issue so we can resolve it?",
+        "I'm very sorry to hear that. Let me escalate this to our team right away. Please share the details of your complaint.",
+        "I understand your frustration and I'm sorry. I'll do everything I can to make this right for you."
+      ]
+    },
+    {
+      "tag": "unknown",
+      "patterns": [],
+      "responses": [
+        "I'm sorry, I didn't understand that. Could you rephrase your question?",
+        "I'm not sure I understand. Could you provide more details?",
+        "That's outside my current knowledge. Please contact our support team at support@company.com for further help."
+      ]
+    }
+  ]
+}
