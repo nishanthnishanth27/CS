@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Support Assistant - Smart OCR</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: #f0f4ff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 480px;
+    height: 100vh;
+    max-height: 860px;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 0;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.15);
+  }
+
+  /* HEADER */
+  .header {
+    background: #1a3a8f;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+  .bot-avatar {
+    width: 46px; height: 46px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .header-info h2 {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .header-info .status {
+    color: #7fffb2;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600;
+  }
+  .status-dot {
+    width: 8px; height: 8px;
+    background: #00e676;
+    border-radius: 50%;
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%,100%{opacity:1} 50%{opacity:0.4}
+  }
+
+  /* TABS */
+  .tabs {
+    display: flex;
+    border-bottom: 2px solid #e0e6f6;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 12px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: all 0.2s;
+  }
+  .tab-btn.active {
+    color: #1a3a8f;
+    border-bottom-color: #1a3a8f;
+  }
+  .tab-btn:hover { background: #f0f4ff; }
+
+  /* PANELS */
+  .panel { display: none; flex-direction: column; flex: 1; overflow: hidden; }
+  .panel.active { display: flex; }
+
+  /* CHAT PANEL */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .msg {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(8px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .msg.bot { justify-content: flex-start; }
+  .msg.user { justify-content: flex-end; }
+  .msg-avatar {
+    width: 30px; height: 30px;
+    background: #e8ecff;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .bubble {
+    max-width: 78%;
+    padding: 11px 14px;
+    border-radius: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+    word-wrap: break-word;
+  }
+  .msg.bot .bubble {
+    background: #f0f3ff;
+    border-bottom-left-radius: 4px;
+    color: #222;
+  }
+  .msg.user .bubble {
+    background: #1a3a8f;
+    color: #fff;
+    border-bottom-right-radius: 4px;
+  }
+  .typing-indicator {
+    display: flex;
+    gap: 4px;
+    padding: 12px 14px;
+    background: #f0f3ff;
+    border-radius: 18px;
+    border-bottom-left-radius: 4px;
+    width: fit-content;
+  }
+  .typing-indicator span {
+    width: 7px; height: 7px;
+    background: #888;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)}
+  }
+
+  /* QUICK REPLIES */
+  .quick-replies {
+    padding: 8px 16px 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    flex-shrink: 0;
+    background: #fff;
+    border-top: 1px solid #eee;
+  }
+  .chip {
+    background: #fff;
+    border: 1.5px solid #c5d0f0;
+    border-radius: 20px;
+    padding: 7px 13px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a3a8f;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.18s;
+    font-family: 'Nunito', sans-serif;
+  }
+  .chip:hover, .chip:active {
+    background: #1a3a8f;
+    color: #fff;
+    border-color: #1a3a8f;
+    transform: scale(1.04);
+  }
+  .chip.danger {
+    border-color: #ffb3b3;
+    color: #d32f2f;
+  }
+  .chip.danger:hover { background: #d32f2f; color:#fff; border-color:#d32f2f; }
+
+  /* INPUT BAR */
+  .input-bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    gap: 8px;
+    border-top: 1px solid #eee;
+    background: #fff;
+    flex-shrink: 0;
+  }
+  .input-bar input {
+    flex: 1;
+    border: 1.5px solid #d0d8f0;
+    border-radius: 22px;
+    padding: 10px 16px;
+    font-size: 14px;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    transition: border 0.2s;
+  }
+  .input-bar input:focus { border-color: #1a3a8f; }
+  .send-btn {
+    width: 40px; height: 40px;
+    background: #1a3a8f;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    transition: transform 0.15s, background 0.15s;
+    flex-shrink: 0;
+  }
+  .send-btn:hover { background: #0d2770; transform: scale(1.08); }
+
+  /* BILL SCANNER PANEL */
+  .scanner-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 28px 20px;
+    overflow-y: auto;
+    gap: 18px;
+  }
+  .scanner-card {
+    width: 100%;
+    background: #f0f4ff;
+    border-radius: 18px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    border: 2px dashed #b0bdf0;
+  }
+  .scanner-icon { font-size: 52px; }
+  .scanner-card h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1a3a8f;
+  }
+  .scanner-card p {
+    font-size: 13px;
+    color: #666;
+    text-align: center;
+    line-height: 1.5;
+  }
+  .upload-label {
+    background: #1a3a8f;
+    color: #fff;
+    border-radius: 22px;
+    padding: 12px 28px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'Nunito', sans-serif;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, transform 0.15s;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .upload-label:active { background: #0d2770; transform: scale(0.97); }
+
+  #file-input { display: none; }
+
+  .bill-result {
+    width: 100%;
+    background: #fff;
+    border-radius: 16px;
+    padding: 20px;
+    border: 1.5px solid #e0e6f6;
+    box-shadow: 0 2px 12px rgba(26,58,143,0.07);
+  }
+  .bill-result h4 {
+    font-size: 15px;
+    font-weight: 800;
+    color: #1a3a8f;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .bill-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 7px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 14px;
+    color: #444;
+  }
+  .bill-row:last-child { border-bottom: none; font-weight: 800; color: #1a3a8f; }
+  .bill-row span:last-child { font-weight: 700; }
+
+  .preview-img {
+    width: 100%;
+    border-radius: 12px;
+    border: 1.5px solid #e0e6f6;
+    max-height: 200px;
+    object-fit: contain;
+    background: #fafafa;
+  }
+
+  .error-msg {
+    background: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .success-msg {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin: 10px 0;
+  }
+
+  .warning-msg {
+    background: #fff3cd;
+    color: #856404;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    margin: 10px 0;
+    border: 1px solid #ffeaa7;
+  }
+
+  .loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #e0e6f6;
+    border-top: 3px solid #1a3a8f;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .free-badge {
+    display: inline-block;
+    background: #4caf50;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 8px;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="bot-avatar">🤖</div>
+    <div class="header-info">
+      <h2>Support Assistant <span class="free-badge">SMART OCR</span></h2>
+      <div class="status"><span class="status-dot"></span> Online — Hybrid Powered</div>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('chat')" id="tab-chat">
+      💬 Chat Support
+    </button>
+    <button class="tab-btn" onclick="switchTab('scanner')" id="tab-scanner">
+      🧾 Bill Scanner
+    </button>
+  </div>
+
+  <!-- CHAT PANEL -->
+  <div class="panel active" id="panel-chat">
+    <div class="messages" id="messages">
+      <div class="msg bot">
+        <div class="msg-avatar">🤖</div>
+        <div class="bubble">
+          👋 Hello! I'm your AI Support Assistant.<br>I can help you with:<br><br>
+          🛒 Order Status &nbsp;|&nbsp; 💰 Billing &nbsp;|&nbsp; 🔄 Refunds<br>
+          🔧 Technical Issues &nbsp;|&nbsp; 📦 Shipping &nbsp;|&nbsp; 🧾 Bill Scanner
+        </div>
+      </div>
+    </div>
+
+    <!-- QUICK REPLY CHIPS -->
+    <div class="quick-replies">
+      <button class="chip" onclick="sendQuick('📦 Order Status')">📦 Order Status</button>
+      <button class="chip" onclick="sendQuick('🔄 Refund')">🔄 Refund</button>
+      <button class="chip" onclick="sendQuick('💳 Billing')">💳 Billing</button>
+      <button class="chip" onclick="sendQuick('🔧 Tech Support')">🔧 Tech Support</button>
+      <button class="chip" onclick="sendQuick('🚚 Shipping')">🚚 Shipping</button>
+      <button class="chip danger" onclick="sendQuick('❌ Cancel Order')">❌ Cancel Order</button>
+    </div>
+
+    <!-- INPUT BAR -->
+    <div class="input-bar">
+      <input type="text" id="chat-input" placeholder="Type your message..." 
+             onkeydown="if(event.key==='Enter') sendMessage()" />
+      <button class="send-btn" onclick="sendMessage()">➤</button>
+    </div>
+  </div>
+
+  <!-- BILL SCANNER PANEL -->
+  <div class="panel" id="panel-scanner">
+    <div class="scanner-panel" id="scanner-content">
+      <div class="scanner-card">
+        <div class="scanner-icon">🧾</div>
+        <h3>Bill Scanner <span class="free-badge">SMART</span></h3>
+        <p>Upload a photo of your bill or receipt and we'll extract the details using Smart OCR.</p>
+        <label class="upload-label" for="file-input">
+          📷 Upload Bill / Receipt
+        </label>
+        <input type="file" id="file-input" accept="image/*" onchange="handleBillUpload(event)" />
+      </div>
+      <div style="font-size:13px;color:#888;text-align:center;line-height:1.6;margin-top:10px;">
+        🎯 Hybrid Mode: Tries Gemini first, falls back to Tesseract<br>
+        Supported formats: JPG, PNG, WEBP<br>
+        100% Free - Always works!
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Load Tesseract.js for fallback -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<script>
+  // Gemini API Key
+  const GEMINI_API_KEY = 'AIzaSyBd6M08trfhVHMwkNyTGZ72w0ln48LLGaA';
+
+  // ----------- TAB SWITCHING -----------
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+  }
+
+  // ----------- CHAT -----------
+  const responses = {
+    'order status': [
+      "🛒 To check your order status, please share your Order ID (e.g. ORD-12345) and I'll look it up right away!",
+      "📦 Your order is typically processed within 24 hours. Share your order number for real-time tracking."
+    ],
+    'refund': [
+      "🔄 Refunds are processed within 5–7 business days. Please share your order ID and reason for the refund.",
+      "💸 I've initiated the refund process. Can you confirm the email address used for the purchase?"
+    ],
+    'billing': [
+      "💳 I can help with billing queries! Please share your invoice number or the amount in question.",
+      "🧾 For billing issues, you can also use the Bill Scanner tab to upload your invoice directly."
+    ],
+    'tech support': [
+      "🔧 Tech support is here! Please describe the issue you're facing and your device/OS version.",
+      "💻 Let me escalate this to our technical team. Can you share a screenshot of the error?"
+    ],
+    'shipping': [
+      "🚚 Standard shipping takes 3–5 business days. Express options are available at checkout.",
+      "📍 To track your shipment, share your tracking number and I'll get the latest update."
+    ],
+    'cancel order': [
+      "❌ To cancel an order, I'll need your Order ID. Note: cancellations are only possible within 2 hours of placing the order.",
+      "⚠️ Your cancellation request has been noted. Please share your Order ID to proceed."
+    ],
+    'default': [
+      "🤔 I'm not sure I understood that. Could you rephrase or pick one of the quick options below?",
+      "👋 I'm here to help! Try tapping one of the quick-reply buttons below, or type your question."
+    ]
+  };
+
+  function getResponse(text) {
+    const t = text.toLowerCase();
+    if (t.includes('order') && t.includes('status') || t.includes('order status')) return pick(responses['order status']);
+    if (t.includes('refund') || t.includes('return')) return pick(responses['refund']);
+    if (t.includes('bill') || t.includes('billing') || t.includes('invoice')) return pick(responses['billing']);
+    if (t.includes('tech') || t.includes('technical') || t.includes('support') || t.includes('issue') || t.includes('error')) return pick(responses['tech support']);
+    if (t.includes('ship') || t.includes('delivery') || t.includes('track')) return pick(responses['shipping']);
+    if (t.includes('cancel')) return pick(responses['cancel order']);
+    return pick(responses['default']);
+  }
+
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function addMessage(text, sender) {
+    const container = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + sender;
+    div.innerHTML = sender === 'bot'
+      ? `<div class="msg-avatar">🤖</div><div class="bubble">${text}</div>`
+      : `<div class="bubble">${text}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function showTyping() {
+    const container = document.getElementById('messages');
+    const div = document.createElement('div');
+    div.className = 'msg bot';
+    div.id = 'typing';
+    div.innerHTML = `<div class="msg-avatar">🤖</div>
+      <div class="typing-indicator">
+        <span></span><span></span><span></span>
+      </div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  }
+
+  function removeTyping() {
+    const el = document.getElementById('typing');
+    if (el) el.remove();
+  }
+
+  function sendMessage() {
+    const input = document.getElementById('chat-input');
+    const text = input.value.trim();
+    if (!text) return;
+    addMessage(text, 'user');
+    input.value = '';
+    showTyping();
+    setTimeout(() => {
+      removeTyping();
+      addMessage(getResponse(text), 'bot');
+    }, 900 + Math.random() * 500);
+  }
+
+  function sendQuick(text) {
+    addMessage(text, 'user');
+    showTyping();
+    setTimeout(() => {
+      removeTyping();
+      addMessage(getResponse(text), 'bot');
+    }, 800 + Math.random() * 400);
+  }
+
+  // ----------- SMART BILL SCANNER WITH FALLBACK -----------
+  async function handleBillUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64Image = e.target.result.split(',')[1];
+      const imageUrl = e.target.result;
+
+      const content = document.getElementById('scanner-content');
+      content.innerHTML = `
+        <div style="width:100%;text-align:center;font-size:14px;color:#1a3a8f;font-weight:700;padding:8px 0;">
+          📷 Analyzing bill with Smart OCR...
+        </div>
+        <img src="${imageUrl}" class="preview-img" alt="Uploaded bill" />
+        <div class="loading-spinner"></div>
+        <div style="font-size:13px;color:#888;text-align:center;">First trying Gemini AI, fallback to Tesseract if needed...</div>
+      `;
+
+      try {
+        // Try Gemini first
+        console.log('Trying Gemini API...');
+        const geminiResponse = await fetch(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              contents: [{
+                parts: [
+                  {
+                    text: `Analyze this bill/receipt image and extract the following details. Return ONLY a JSON object with NO markdown, NO backticks, NO preamble:
+{
+  "items": [
+    {"name": "Item Name", "price": "₹ Amount"},
+    ...
+  ],
+  "subtotal": "₹ Amount or N/A",
+  "tax": "₹ Amount or N/A",
+  "shipping": "₹ Amount or N/A",
+  "total": "₹ Amount",
+  "vendor": "Vendor Name or N/A",
+  "date": "Date or N/A"
+}`
+                  },
+                  {
+                    inlineData: {
+                      mimeType: "image/jpeg",
+                      data: base64Image
+                    }
+                  }
+                ]
+              }]
+            })
+          }
+        );
+
+        const geminiData = await geminiResponse.json();
+
+        // Check if Gemini succeeded
+        if (geminiResponse.ok && geminiData.candidates?.[0]?.content?.parts?.[0]?.text) {
+          const textContent = geminiData.candidates[0].content.parts[0].text;
+          const jsonMatch = textContent.match(/\{[\s\S]*\}/);
+          
+          if (jsonMatch) {
+            const billData = JSON.parse(jsonMatch[0]);
+            displayBillResults(imageUrl, billData, '✨ Gemini AI');
+            event.target.value = '';
+            return;
+          }
+        }
+
+        // If Gemini fails, fall back to Tesseract
+        console.log('Gemini failed or quota exceeded, trying Tesseract...');
+        useTesseractOCR(imageUrl, event);
+
+      } catch (error) {
+        console.log('Gemini error, falling back to Tesseract:', error);
+        useTesseractOCR(imageUrl, event);
+      }
+    };
+
+    reader.readAsDataURL(file);
+  }
+
+  // Fallback: Use Tesseract.js free OCR
+  async function useTesseractOCR(imageUrl, event) {
+    const content = document.getElementById('scanner-content');
+    content.innerHTML = `
+      <div style="width:100%;text-align:center;font-size:14px;color:#1a3a8f;font-weight:700;padding:8px 0;">
+      📷 Using Tesseract OCR (free fallback)...
+      </div>
+      <img src="${imageUrl}" class="preview-img" alt="Uploaded bill" />
+      <div class="loading-spinner"></div>
+      <div style="font-size:13px;color:#888;text-align:center;">Processing with free OCR technology (10-20 seconds)...</div>
+    `;
+
+    try {
+      const result = await Tesseract.recognize(imageUrl, 'eng');
+      const extractedText = result.data.text;
+      const billData = parseBillText(extractedText);
+      displayBillResults(imageUrl, billData, '🔮 Tesseract OCR');
+      event.target.value = '';
+    } catch (error) {
+      showScannerError(`❌ Both methods failed. Please try with a clearer image.`);
+      event.target.value = '';
+    }
+  }
+
+  function parseBillText(text) {
+    const lines = text.split('\n').map(l => l.trim()).filter(l => l);
+    const items = [];
+    let subtotal = '₹ 0';
+    let tax = '₹ 0';
+    let shipping = '₹ 0';
+    let total = '₹ 0';
+
+    // Keywords to identify sections
+    const totalKeywords = ['total', 'grand total', 'final total', 'amount due'];
+    const subtotalKeywords = ['subtotal', 'sub total', 'amount before'];
+    const taxKeywords = ['tax', 'gst', 'vat', 'service charge', 'cgst', 'sgst'];
+    const shippingKeywords = ['shipping', 'delivery', 'freight', 'postage'];
+    const skipKeywords = ['total', 'subtotal', 'tax', 'gst', 'shipping', 'delivery', 'vat', 'paid', 'balance', 'due', 'date', 'invoice'];
+
+    let lastTotal = '₹ 0';
+
+    lines.forEach((line) => {
+      // Extract all numbers from the line
+      const numberMatches = line.match(/[\d,]+\.?\d*/g);
+      
+      if (numberMatches && numberMatches.length > 0) {
+        const lastNumber = numberMatches[numberMatches.length - 1];
+        const price = parseFloat(lastNumber.replace(/,/g, ''));
+        
+        // Remove numbers from text to get item name
+        let itemName = line.replace(/[\d,\.\$₹\s]+/g, ' ').trim();
+        itemName = itemName.replace(/\s+/g, ' ');
+
+        if (!itemName || price <= 0) return;
+
+        // Check what type of line this is
+        const lowerLine = line.toLowerCase();
+        
+        if (totalKeywords.some(k => lowerLine.includes(k))) {
+          total = `₹ ${price.toFixed(2)}`;
+          lastTotal = total;
+        } else if (subtotalKeywords.some(k => lowerLine.includes(k))) {
+          subtotal = `₹ ${price.toFixed(2)}`;
+        } else if (taxKeywords.some(k => lowerLine.includes(k))) {
+          tax = `₹ ${price.toFixed(2)}`;
+        } else if (shippingKeywords.some(k => lowerLine.includes(k))) {
+          shipping = `₹ ${price.toFixed(2)}`;
+        } else if (!skipKeywords.some(k => lowerLine.includes(k)) && itemName.length > 2) {
+          // This is a bill item
+          items.push({
+            name: itemName.substring(0, 40),
+            price: `₹ ${price.toFixed(2)}`
+          });
+        }
+      }
+    });
+
+    // Calculate subtotal from items if not found
+    if (items.length > 0 && subtotal === '₹ 0') {
+      const itemsTotal = items.reduce((sum, item) => {
+        const price = parseFloat(item.price.replace(/[^0-9.]/g, ''));
+        return sum + (isNaN(price) ? 0 : price);
+      }, 0);
+      subtotal = `₹ ${itemsTotal.toFixed(2)}`;
+    }
+
+    // Use lastTotal as final total
+    if (total === '₹ 0' && lastTotal !== '₹ 0') {
+      total = lastTotal;
+    }
+
+    return {
+      items: items.length > 0 ? items : [{ name: 'Items extracted from bill', price: '₹ 0' }],
+      subtotal: subtotal,
+      tax: tax,
+      shipping: shipping,
+      total: total || subtotal
+    };
+  }
+
+  function displayBillResults(imageUrl, billData, method) {
+    const content = document.getElementById('scanner-content');
+    
+    let itemsHTML = '';
+    if (billData.items && Array.isArray(billData.items)) {
+      itemsHTML = billData.items
+        .map(item => `<div class="bill-row"><span>${item.name}</span><span>${item.price}</span></div>`)
+        .join('');
+    }
+
+    const hasShipping = billData.shipping && billData.shipping !== '₹ 0' && billData.shipping !== '₹ 0.00';
+    const hasTax = billData.tax && billData.tax !== '₹ 0' && billData.tax !== '₹ 0.00';
+
+    content.innerHTML = `
+      <img src="${imageUrl}" class="preview-img" alt="Uploaded bill" />
+      <div class="bill-result">
+        <h4>🧾 Extracted Bill Details</h4>
+        ${itemsHTML}
+        ${billData.subtotal && billData.subtotal !== '₹ 0' ? `<div class="bill-row"><span>Subtotal</span><span>${billData.subtotal}</span></div>` : ''}
+        ${hasShipping ? `<div class="bill-row"><span>Shipping</span><span>${billData.shipping}</span></div>` : ''}
+        ${hasTax ? `<div class="bill-row"><span>Tax / GST</span><span>${billData.tax}</span></div>` : ''}
+        <div class="bill-row"><span>Total Amount</span><span>${billData.total}</span></div>
+      </div>
+      <div class="success-msg">✅ Bill scanned successfully! ${method}</div>
+      <label class="upload-label" for="file-input" style="background:#28a745;margin-top:10px;">
+        🔄 Scan Another Bill
+      </label>
+      <button class="upload-label" style="background:#1a3a8f;margin-top:10px;" onclick="switchTab('chat');addMessage('I just scanned my bill and got the details. Can you help with any billing issues?', 'user'); setTimeout(() => showTyping(); setTimeout(() => { removeTyping(); addMessage(getResponse('billing'), 'bot'); }, 800), 300);">
+        💬 Discuss with Support
+      </button>
+    `;
+  }
+
+  function showScannerError(message) {
+    const content = document.getElementById('scanner-content');
+    content.innerHTML = `
+      <div class="scanner-card">
+        <div class="scanner-icon">🧾</div>
+        <h3>Bill Scanner</h3>
+        <div class="error-msg" style="margin:10px 0;">${message}</div>
+        <label class="upload-label" for="file-input">
+          📷 Upload Bill / Receipt
+        </label>
+        <input type="file" id="file-input" accept="image/*" onchange="handleBillUpload(event)" />
+      </div>
+      <div style="font-size:13px;color:#888;text-align:center;line-height:1.6;margin-top:10px;">
+        Tips: Use clear, well-lit images<br>
+        Both Gemini & Tesseract available
+      </div>
+    `;
+  }
+</script>
+</body>
+</html>
